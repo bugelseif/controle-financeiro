@@ -2,17 +2,17 @@ from controle_financeiro import movimentos
 from datetime import MINYEAR, date, datetime
 import dateutil.relativedelta
 
-
-# arg: movimentos = array com dicionarios
 def exibirSaldoTotal(movimentos):
+    """arg: movimentos = array com dicionarios."""
+
     total = 0
     for i in movimentos:
         total += i['valor']
     print(total)
 
-# arg: movimentos = array com dicionarios,
-# meses = quantos meses anterior a data atual
 def exibirEntradas(movimentos, meses):
+    """arg: movimentos = array com dicionarios,
+       arg: meses = quantos meses anteriores à data atual serão considerados."""
     now = date.today()
     menos = now + dateutil.relativedelta.relativedelta(months=-meses)
 
@@ -21,9 +21,10 @@ def exibirEntradas(movimentos, meses):
             print(i['data'])
             print(i['valor'])
 
-# arg: movimentos = array com dicionarios,
-# meses = quantos meses anterior a data atual
+
 def exibirSaidas(movimentos, meses):
+    """arg: movimentos = array com dicionarios,
+       arg: meses = quantos meses anterior a data atual."""
     now = date.today()
     menos = now + dateutil.relativedelta.relativedelta(months=-meses)
 
@@ -33,8 +34,8 @@ def exibirSaidas(movimentos, meses):
             print(i['valor'])
             #verificar erro após o retorno dos valores
 
-# arg: movimentos = array com dicionarios
 def exibirExtrato(movimentos):
+    """arg: movimentos = array com dicionarios."""
     now = date.today()
     while True:
         print('''indique o periodo
@@ -95,8 +96,8 @@ def exibirExtrato(movimentos):
                 print(i['valor'])
     #verificar erros na comparação de data e melhorar saidas
 
-# arg: movimentos = array com dicionarios
 def novoLancamento(movimentos):
+    """arg: movimentos = array com dicionarios."""
     id = 8 #autoincremento
     valor = float(input('Digite o valor '))
     motivo = input('Digite o motivo ')
@@ -108,9 +109,10 @@ def novoLancamento(movimentos):
 
     movimentos.append(novo)
 
-# arg: movimentos = array com dicionarios,
-# id = identifica qual modificar
+
 def editarLancamento(movimentos, id):
+    """arg: movimentos = array com dicionarios.
+       arg: # id = identifica qual modificar."""
     for i in movimentos:
         if i['id'] == id:
             print(f"Editar id:{i['id']}")
@@ -119,3 +121,6 @@ def editarLancamento(movimentos, id):
             i['responsavel'] = input('Digite o nome do responsavel ')
             i['observacoes'] = input('Observações: ')
             i['inseridoPor'] = input('Digite seu nome ')
+
+
+help(exibirSaldoTotal)
