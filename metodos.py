@@ -3,14 +3,14 @@ from datetime import MINYEAR, date, datetime
 import dateutil.relativedelta
 
 
-def imprimirMovimentacoes(movimentacao, exibicao):
+def imprimirMovimentacoes(movimentacao, tipoMovimentacao, exibicao):
     """arg: movimentacao = uma movimentacao na conta
        arg: exibicao = verdadeiro indica exibição completa, falso infica exibição resumida
     """
     if (exibicao):
-        print(f"Movimentação de {movimentacao['valor']} em {movimentacao['data']} com o motivo de {movimentacao['motivo']}, observações de {movimentacao['observacoes']}, inserido por {movimentacao['inseridoPor']} e de responsabilidade de {movimentacao['responsavel']}")
+        print(f"{tipoMovimentacao} (id: {movimentacao['id']}) de {abs(movimentacao['valor'])} em {movimentacao['data']} com o motivo de {movimentacao['motivo']}, observações de {movimentacao['observacoes']}, inserido por {movimentacao['inseridoPor']} e de responsabilidade de {movimentacao['responsavel']}")
     else: 
-        print(f"Movimentação de {movimentacao['valor']} em {movimentacao['data']}")
+        print(f"{tipoMovimentacao} (id: {movimentacao['id']}) de {abs(movimentacao['valor'])} em {movimentacao['data']}")
 
 
 def exibirSaldoTotal(movimentos):
@@ -32,9 +32,7 @@ def exibirEntradas(movimentos, meses = 1):
     visualizacao = int(input())
     for i in movimentos:
         if i['valor'] > 0 and meses_considerados <= now: 
-            imprimirMovimentacoes(i, visualizacao == 2)
-
-
+            imprimirMovimentacoes(i, "Entrada", visualizacao == 2)
 
 
 def exibirSaidas(movimentos, meses = 1):
@@ -50,7 +48,7 @@ def exibirSaidas(movimentos, meses = 1):
 
     for i in movimentos:
         if i['valor'] < 0 and menos < now:
-            imprimirMovimentacoes(i, visualizacao == 2)
+            imprimirMovimentacoes(i, "Saída", visualizacao == 2)
 
 def exibirExtrato(movimentos):
     """arg: movimentos = array com dicionarios."""
@@ -60,16 +58,16 @@ def exibirExtrato(movimentos):
     ''')
     periodo = int(input())
     
-    menos = now
+    tempo_considerado = now
 
     if (periodo == 1):
-        menos = now + dateutil.relativedelta.relativedelta(days=-7)
+        tempo_considerado = now + dateutil.relativedelta.relativedelta(days=-7)
     elif (periodo ==2):
-        menos = now + dateutil.relativedelta.relativedelta(days=-15)
+        tempo_considerado = now + dateutil.relativedelta.relativedelta(days=-15)
     elif (periodo ==3):
-        menos = now + dateutil.relativedelta.relativedelta(months=-6)
+        tempo_considerado = now + dateutil.relativedelta.relativedelta(months=-6)
     else:
-        menos = date(1990,1,1)
+        tempo_considerado = date(1990,1,1)
 
     print("""indique o tipo de visualização
         (1) resumido (padrão) | (2) completo
@@ -78,48 +76,60 @@ def exibirExtrato(movimentos):
     visualizacao = int(input())
 
     for i in movimentos:
-        print("oi")
-       ##Implementar
-        if menos <= date.now():#datetime.strptime(i['data'],'%Y-%m-%d').date():
-            imprimirMovimentacoes(i, visualizacao == 2)
+        #Modificar a condição do if
+        #if menos <= date.datetime.strptime(i['data'],'%Y-%m-%d').date():
+        if True:
+            if i['valor'] > 0:
+                imprimirMovimentacoes(i, "Entrada", visualizacao ==2)
+            else:
+                imprimirMovimentacoes(i, "Saída", visualizacao ==2)
 
-            print("o")
-            # print(f'Movimentação {} em {} ')
-            # if i['valor'] > 0:
-            #     print('entradas')
-            #     print(i['data'])
-            #     print(i['valor'])
-            # else:
-            #     print('saidas')
-            #     print(i['data'])
-            #     print(i['valor'])
-
-    #verificar erros na comparação de data e melhorar saidas
 
 def novoLancamento(movimentos):
     """arg: movimentos = array com dicionarios."""
-    id = 8 #autoincremento
-    valor = float(input('Digite o valor '))
-    motivo = input('Digite o motivo ')
-    data = input('Digite a data aaaa-mm-dd ')
-    responsavel = input('Digite o nome do responsavel ')
-    observacoes = input('Observações: ')
-    inseridoPor = input('Digite seu nome')
-    novo = {"id": id, "valor":valor, "motivo":motivo, "data": data,"Responsavel": responsavel, "Observacoes": observacoes, "InseridoPor": inseridoPor}
-
+    id = len(movimentos) + 1
+    print("""Indique a movimentação
+        (1) depósito (padrão) | (2) saque
+    """)  
+    operacao = int(input())
+    valor = float(input('Digite o valor movimentado: '))
+    ## atualizar o valor de valor de acordo com um saque e depósito. Saque tem valor positivo, depósito tem valor negativo
+    motivo = input('Digite o motivo: ')
+    data = date.today()
+    responsavel = input('Digite o nome da responsavel: ')
+    observacoes = input('Observações (digite - se não houverem observações): ')
+    inseridoPor = input('Digite seu nome: ')
+    novo = {"id": id, "valor":valor, "motivo":motivo, "data": data,"responsavel": responsavel, "observacoes": observacoes, "inseridoPor": inseridoPor}
+    ##confirmar a inserção
     movimentos.append(novo)
 
 
-def editarLancamento(movimentos, id):
+def ativarModificacaoCampo(texto):
+    print(texto)
+    print("Digite s para modificar, caso contrário digite n")
+    continuar = input()
+    if(continuar.lower() == 's'):
+        return True
+    return False
+
+def editarLancamento(movimentos, identificador):
     """arg: movimentos = array com dicionarios.
        arg: # id = identifica qual modificar."""
     for i in movimentos:
-        if i['id'] == id:
-            print(f"Editar id:{i['id']}")
-            i['motivo'] = input('Digite o motivo ')
-            i['data'] = input('Digite a data aaaa-mm-dd ')
-            i['responsavel'] = input('Digite o nome do responsavel ')
-            i['observacoes'] = input('Observações: ')
-            i['inseridoPor'] = input('Digite seu nome ')
+        if i['id'] == identificador:
+            print(f"Editar movimentação: ")
+            if i['valor'] > 0:
+                imprimirMovimentacoes(i, "Entrada", True)
+            else:
+                imprimirMovimentacoes(i, "Saída", True)
 
+            i['data'] = date.today()
+            i['inseridoPor'] = input('Digite seu nome: ')
+            
+            if(ativarModificacaoCampo("Deseja alterar o motivo?")):
+                 i['motivo'] = "MODIFICADO: " + input('Digite o novo motivo: ')
+            if(ativarModificacaoCampo("Deseja alterar a responsável?")):
+                 i['responsavel'] = "MODIFICADO: " + input('Digite o nome da nova responsavel ')
+            if(ativarModificacaoCampo("Deseja alterar as observações?")):
+                 i['observacoes'] = "MODIFICADO: " + input('Observações(digite - se não houverem observações): ')
 
