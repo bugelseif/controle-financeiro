@@ -1,4 +1,5 @@
 from datetime import date
+from metodos import *
 
 movimentos =  [
     {"id": 1, "valor":1000, "motivo": "Venda de Bolinhos","data": date(2020, 12, 4).isoformat(),"Responsavel": "lala","Observacoes": "Deu muito dinheiro", "InseridoPor": "lala"},
@@ -10,3 +11,4 @@ movimentos =  [
     {"id": 7, "valor":-714.41, "motivo": "coxinha pra todo mundo","data": date.today(),"Responsavel": "lala", "Observacoes": "Panças enchidas", "InseridoPor": "lala"}
 ]
 
+exibirEntradas(movimentos)

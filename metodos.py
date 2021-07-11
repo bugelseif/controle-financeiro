@@ -2,9 +2,19 @@
 from datetime import MINYEAR, date, datetime
 import dateutil.relativedelta
 
+
+def imprimirMovimentacoes(movimentacao, exibicao):
+    """arg: movimentacao = uma movimentacao na conta
+       arg: exibicao = verdadeiro indica exibição completa, falso infica exibição resumida
+    """
+    if (exibicao):
+        print(f"Movimentação de {movimentacao['valor']} em {movimentacao['data']} com o motivo de {movimentacao['motivo']}, observações de {movimentacao['Observacoes']}, inserido por {movimentacao['InseridoPor']} e de responsabilidade de {movimentacao['Responsavel']}")
+    else: 
+        print(f"Movimentação de {movimentacao['valor']} em {movimentacao['data']}")
+
+
 def exibirSaldoTotal(movimentos):
     """arg: movimentos = array com dicionarios."""
-
     total = 0
     for i in movimentos:
         total += i['valor']
@@ -16,9 +26,15 @@ def exibirEntradas(movimentos, meses = 1):
        arg: meses = quantos meses anteriores à data atual serão considerados."""
     now = date.today()
     meses_considerados = now + dateutil.relativedelta.relativedelta(months=-meses)
+    print("""indique o tipo de visualização
+        (1) resumido (padrão) | (2) completo
+        """)
+    visualizacao = int(input())
     for i in movimentos:
         if i['valor'] > 0 and meses_considerados <= now: 
-            print(f"Movimentação de {i['valor']} em {i['data']}")
+            imprimirMovimentacoes(i, visualizacao == 2)
+
+
 
 
 def exibirSaidas(movimentos, meses = 1):
@@ -27,9 +43,14 @@ def exibirSaidas(movimentos, meses = 1):
     now = date.today()
     menos = now + dateutil.relativedelta.relativedelta(months=-meses)
 
+    print("""indique o tipo de visualização
+        (1) resumido (padrão) | (2) completo
+        """)
+    visualizacao = int(input())
+
     for i in movimentos:
         if i['valor'] < 0 and menos < now:
-            print(f"Movimentação de {i['valor']} em {i['data']}")
+            imprimirMovimentacoes(i, visualizacao == 2)
 
 def exibirExtrato(movimentos):
     """arg: movimentos = array com dicionarios."""
@@ -54,13 +75,16 @@ def exibirExtrato(movimentos):
         (1) resumido (padrão) | (2) completo
     """)
 
-    visualizacao = (int(input))
+    visualizacao = int(input())
 
     for i in movimentos:
         print("oi")
        ##Implementar
         if menos <= date.now():#datetime.strptime(i['data'],'%Y-%m-%d').date():
-            print(f'Movimentação {} em {} ')
+            imprimirMovimentacoes(i, visualizacao == 2)
+
+            print("o")
+            # print(f'Movimentação {} em {} ')
             # if i['valor'] > 0:
             #     print('entradas')
             #     print(i['data'])
