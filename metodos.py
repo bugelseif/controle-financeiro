@@ -8,7 +8,7 @@ def imprimirMovimentacoes(movimentacao, exibicao):
        arg: exibicao = verdadeiro indica exibição completa, falso infica exibição resumida
     """
     if (exibicao):
-        print(f"Movimentação de {movimentacao['valor']} em {movimentacao['data']} com o motivo de {movimentacao['motivo']}, observações de {movimentacao['Observacoes']}, inserido por {movimentacao['InseridoPor']} e de responsabilidade de {movimentacao['Responsavel']}")
+        print(f"Movimentação de {movimentacao['valor']} em {movimentacao['data']} com o motivo de {movimentacao['motivo']}, observações de {movimentacao['observacoes']}, inserido por {movimentacao['inseridoPor']} e de responsabilidade de {movimentacao['responsavel']}")
     else: 
         print(f"Movimentação de {movimentacao['valor']} em {movimentacao['data']}")
 
