@@ -34,7 +34,7 @@ while (True):
     elif opcao == 5:
         novoLancamento(movimentos)
     elif opcao == 6:
-        identificador = int(input("Qual o id da movimentação que deseja modificar?"))
+        identificador = int(input("Qual o id da movimentação que deseja modificar? (digite -1 para cancelar)"))
         editarLancamento(movimentos,identificador)
     else:
         print("Opção inválida. Tente novamente.")

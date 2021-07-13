@@ -89,22 +89,27 @@ def novoLancamento(movimentos):
     """arg: movimentos = array com dicionarios."""
     id = len(movimentos) + 1
     print("""Indique a movimentação
-        (1) depósito (padrão) | (2) saque
+        (1) Entrada na conta (padrão) | (2) Saída da conta
     """)  
     operacao = int(input())
-    valor = float(input('Digite o valor movimentado: '))
-    ## atualizar o valor de valor de acordo com um saque e depósito. Saque tem valor positivo, depósito tem valor negativo
+
+    valorLido = float(input('Digite o valor movimentado: '))
+    valorParaSalvar = 0 - valorLido if operacao == 2 else valorLido # modifica o valor pra ser salvo se for uma entrada ou saída
+    
     motivo = input('Digite o motivo: ')
     data = date.today()
     responsavel = input('Digite o nome da responsavel: ')
     observacoes = input('Observações (digite - se não houverem observações): ')
     inseridoPor = input('Digite seu nome: ')
-    novo = {"id": id, "valor":valor, "motivo":motivo, "data": data,"responsavel": responsavel, "observacoes": observacoes, "inseridoPor": inseridoPor}
-    ##confirmar a inserção
-    movimentos.append(novo)
-
+    
+    novo = {"id": id, "valor":valorParaSalvar, "motivo":motivo, "data": data,"responsavel": responsavel, "observacoes": observacoes, "inseridoPor": inseridoPor}
+    print("Digite s para salvar a movimentação, caso contrário digite n")
+    salvar = input()
+    if(salvar.lower() == 's'):
+        movimentos.append(novo)
 
 def ativarModificacaoCampo(texto):
+    """arg: texto = texto a ser impresso antes do pedido de confirmação""""
     print(texto)
     print("Digite s para modificar, caso contrário digite n")
     continuar = input()
@@ -122,10 +127,10 @@ def editarLancamento(movimentos, identificador):
                 imprimirMovimentacoes(i, "Entrada", True)
             else:
                 imprimirMovimentacoes(i, "Saída", True)
-
+            #informações obrigatórias
             i['data'] = date.today()
             i['inseridoPor'] = input('Digite seu nome: ')
-            
+            #informações optativas
             if(ativarModificacaoCampo("Deseja alterar o motivo?")):
                  i['motivo'] = "MODIFICADO: " + input('Digite o novo motivo: ')
             if(ativarModificacaoCampo("Deseja alterar a responsável?")):
