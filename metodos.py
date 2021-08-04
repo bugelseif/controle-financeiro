@@ -1,16 +1,24 @@
-# from controle_financeiro import movimentos
 from datetime import MINYEAR, date, datetime
 import dateutil.relativedelta
 
 
 def imprimirMovimentacoes(movimentacao, tipoMovimentacao, exibicao):
     """arg: movimentacao = uma movimentacao na conta
-       arg: exibicao = verdadeiro indica exibição completa, falso infica exibição resumida
+       arg: exibicao = verdadeiro indica exibição completa, falso indica exibição resumida
     """
     if (exibicao):
-        print(f"{tipoMovimentacao} (id: {movimentacao['id']}) de {abs(movimentacao['valor'])} em {movimentacao['data']} com o motivo de {movimentacao['motivo']}, observações de {movimentacao['observacoes']}, inserido por {movimentacao['inseridoPor']} e de responsabilidade de {movimentacao['responsavel']}")
+        print(f"""{tipoMovimentacao}
+        (id: {movimentacao['id']}) Valor de {abs(movimentacao['valor'])}
+        Data: {movimentacao['data']}
+        Com o motivo de {movimentacao['motivo']}
+        Observações: {movimentacao['observacoes']}
+        Inserido por {movimentacao['inseridoPor']}
+        De responsabilidade de {movimentacao['responsavel']}
+        """)
     else: 
-        print(f"{tipoMovimentacao} (id: {movimentacao['id']}) de {abs(movimentacao['valor'])} em {movimentacao['data']}")
+        print(f"""{tipoMovimentacao}
+        (id: {movimentacao['id']}) de {abs(movimentacao['valor'])} em {movimentacao['data']}
+        """)
 
 
 def exibirSaldoTotal(movimentos):
@@ -21,7 +29,7 @@ def exibirSaldoTotal(movimentos):
     print(f'O saldo total é {total}')
 
 
-def exibirEntradas(movimentos, meses = 1):
+def exibirEntradas(movimentos, meses):
     """arg: movimentos = array com dicionarios,
        arg: meses = quantos meses anteriores à data atual serão considerados."""
     now = date.today()
@@ -31,11 +39,13 @@ def exibirEntradas(movimentos, meses = 1):
         """)
     visualizacao = int(input())
     for i in movimentos:
-        if i['valor'] > 0 and meses_considerados <= now: 
+        # if i['valor'] > 0 and meses_considerados <= now: // Não da pra usar o now aqui para comparar por causa dos tipos
+        if i['valor'] > 0 and meses_considerados < datetime.strptime(i['data'], '%Y-%m-%d').date():
+
             imprimirMovimentacoes(i, "Entrada", visualizacao == 2)
 
 
-def exibirSaidas(movimentos, meses = 1):
+def exibirSaidas(movimentos, meses):
     """arg: movimentos = array com dicionarios,
        arg: meses = quantos meses anterior a data atual."""
     now = date.today()
@@ -47,11 +57,12 @@ def exibirSaidas(movimentos, meses = 1):
     visualizacao = int(input())
 
     for i in movimentos:
-        if i['valor'] < 0 and menos < now:
+        # if i['valor'] < 0 and menos < now:
+        if i['valor'] > 0 and menos < datetime.strptime(i['data'],'%Y-%m-%d').date():
             imprimirMovimentacoes(i, "Saída", visualizacao == 2)
 
 def exibirExtrato(movimentos):
-    """arg: movimentos = array com dicionarios."""
+    """arg: movimentos = array com dicionarios. """
     now = date.today()
     print('''indique o periodo
     (1) 7 dias | (2) 15 dias  | (3) 6 meses  | (4) total (padrão)
@@ -77,12 +88,12 @@ def exibirExtrato(movimentos):
 
     for i in movimentos:
         #Modificar a condição do if
-        #if menos <= date.datetime.strptime(i['data'],'%Y-%m-%d').date():
-        if True:
-            if i['valor'] > 0:
-                imprimirMovimentacoes(i, "Entrada", visualizacao ==2)
-            else:
-                imprimirMovimentacoes(i, "Saída", visualizacao ==2)
+        # if True:
+        # if tempo_considerado <= date.datetime.strptime(i['data'],'%Y-%m-%d').date():
+        if i['valor'] > 0:
+            imprimirMovimentacoes(i, "Entrada", visualizacao == 2)
+        else:
+            imprimirMovimentacoes(i, "Saída", visualizacao == 2)
 
 
 def novoLancamento(movimentos):
@@ -102,14 +113,22 @@ def novoLancamento(movimentos):
     observacoes = input('Observações (digite - se não houverem observações): ')
     inseridoPor = input('Digite seu nome: ')
     
-    novo = {"id": id, "valor":valorParaSalvar, "motivo":motivo, "data": data,"responsavel": responsavel, "observacoes": observacoes, "inseridoPor": inseridoPor}
-    print("Digite s para salvar a movimentação, caso contrário digite n")
-    salvar = input()
+    novo = {
+        "id": id,
+        "valor": valorParaSalvar,
+        "motivo": motivo,
+        "data": data,
+        "responsavel": responsavel,
+        "observacoes": observacoes,
+        "inseridoPor": inseridoPor
+        }
+    print(novo)
+    salvar = input("Digite s para salvar a movimentação, caso contrário digite n\n")
     if(salvar.lower() == 's'):
         movimentos.append(novo)
 
 def ativarModificacaoCampo(texto):
-    """arg: texto = texto a ser impresso antes do pedido de confirmação""""
+    """arg: texto = texto a ser impresso antes do pedido de confirmação"""
     print(texto)
     print("Digite s para modificar, caso contrário digite n")
     continuar = input()
